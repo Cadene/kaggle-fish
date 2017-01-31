@@ -1,0 +1,18 @@
+# MacOs indexing files
+.DS_Store
+._.DS_Store
+# Exclude data
+data/raw/*
+data/processed/*
+data/features/*
+data/interim/*
+data/*
+# Exclude models
+models/raw/*
+models/processed/*
+models/*
+# Exclude features
+features/*
+# Exclude logs
+logs/*
+!.gitkeep
