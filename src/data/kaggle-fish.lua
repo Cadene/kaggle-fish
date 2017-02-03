@@ -104,6 +104,49 @@ dataset.load = argcheck{
       end
 }
 
+dataset.loadTrainset = argcheck{
+   {name='dirname', type='string', default='data'},
+   call =
+      function(dirname)
+         local dir_raw = paths.concat(dirname, 'raw')
+         local dir_train = paths.concat(dir_raw, 'train', 'train')
+         local path_filename = paths.concat(dir_train, 'filename.txt')
+
+         --local dir_interim = paths.concat(dirname, 'interim')
+
+         local dir_processed = paths.concat(dirname, 'processed')
+
+         local classes = utils.findClasses(dir_train)
+         local class2target = {}
+         for i, class in ipairs(classes) do
+            class2target[class] = i
+         end
+         
+         if not paths.filep(path_filename) then
+            utils.findFilenames(dir_train, classes)
+         end
+
+         local load = function(line)
+            local splt = lsplit(line, '/')
+            local sample = {
+               line = line,
+               path = paths.concat(dir_train, line),
+               class = splt[1],
+               label = splt[1],
+               target = class2target[splt[1]]
+            }
+            return sample
+         end
+
+         local trainset = tnt.ListDataset{
+            filename = path_filename,
+            load = load
+         }
+
+         return trainset, classes, class2target
+      end
+}
+
 --dataset.load()
 
 return dataset
